@@ -1,24 +1,9 @@
-import { Metadata } from "next";
+"use client"; // Enable client-side interactivity
+
+import { useState } from "react"; // For handling mobile menu state
 import Image from "next/image";
 import { Button } from "components/Button/Button";
 import { LP_GRID_ITEMS } from "lp-items";
-
-export const metadata: Metadata = {
-  title: "GMT Corporation Japan",
-  twitter: {
-    card: "summary_large_image",
-  },
-  openGraph: {
-    url: "https://gmt-corp-japan.vercel.app/",
-    images: [
-      {
-        width: 1200,
-        height: 630,
-        url: "https://raw.githubusercontent.com/Blazity/next-enterprise/main/.github/assets/project-logo.png",
-      },
-    ],
-  },
-};
 
 // Demo data for top-selling cars
 const TOP_SELLING_CARS = [
@@ -85,6 +70,12 @@ const TOP_SELLING_CARS = [
 ];
 
 export default function Web() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <>
       {/* Navbar */}
@@ -96,12 +87,79 @@ export default function Web() {
                 GMT Corp Japan
               
             </div>
-            <div className="flex items-center space-x-8">
+
+            {/* Hamburger Button for Mobile */}
+            <div className="flex lg:hidden">
+              <button
+                onClick={toggleMobileMenu}
+                className="text-gray-800 dark:text-white hover:text-blue-600 focus:outline-none"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16m-7 6h7"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            {/* Desktop Nav Items */}
+            <div className="hidden lg:flex items-center space-x-8">
               <div className="relative group">
                 <button className="text-gray-800 dark:text-white hover:text-blue-600 focus:outline-none">
                   Search Cars ▼
                 </button>
                 <div className="absolute hidden group-hover:block bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 mt-2 w-96">
+                  <input
+                    type="text"
+                    placeholder="Search car brands..."
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-2"
+                  />
+                  <div className="flex space-x-2">
+                    <Button href="#" className="w-full">
+                      Search
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <p className="text-gray-600 dark:text-gray-400">Popular Brands:</p>
+                    <ul className="mt-1">
+                      {["Toyota", "Nissan", "Honda", "Mazda"].map((brand) => (
+                        <li key={brand} className="text-gray-800 dark:text-white">
+                          {brand}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <a href="/services" className="text-gray-800 dark:text-white hover:text-blue-600">
+                Services
+              </a>
+              <a href="/about" className="text-gray-800 dark:text-white hover:text-blue-600">
+                About GMT Corp
+              </a>
+              <a href="/contact" className="text-gray-800 dark:text-white hover:text-blue-600">
+                Contact Us
+              </a>
+            </div>
+          </div>
+
+          {/* Mobile Nav Items */}
+          <div className={`lg:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
+            <div className="flex flex-col space-y-4 mt-4">
+              <div className="relative">
+                <button className="text-gray-800 dark:text-white hover:text-blue-600 focus:outline-none">
+                  Search Cars ▼
+                </button>
+                <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 mt-2 w-full">
                   <input
                     type="text"
                     placeholder="Search car brands..."
@@ -173,7 +231,7 @@ export default function Web() {
                   width={400}
                   height={300}
                   className="w-full h-48 object-cover"
-                  unoptimized // Add this if you're using external images without configuring `next.config.js`
+                  unoptimized // Bypass Next.js optimization for external images
                 />
                 <div className="p-4">
                   <h3 className="text-xl font-bold text-gray-800 dark:text-white">{car.name}</h3>
